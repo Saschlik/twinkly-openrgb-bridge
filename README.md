@@ -18,7 +18,7 @@ This bridge acts as a "Man-in-the-Middle":
 
 1.  **Clone the repository:**
     ```
-    git clone https://github.com/YOUR_USERNAME/twinkly-openrgb-bridge.git
+    git clone https://github.com/Saschlik/twinkly-openrgb-bridge.git
     cd twinkly-openrgb-bridge
     ```
 
@@ -114,6 +114,7 @@ Place a shortcut to this file in your Startup folder (`Win+R` -> `shell:startup`
 
 ## Credits
 Powered by `xled` and `sacn`.
+# twinkly-openrgb-bridge
 # twinkly-openrgb-bridge
 # twinkly-openrgb-bridge
 # twinkly-openrgb-bridge
