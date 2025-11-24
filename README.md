@@ -114,7 +114,3 @@ Place a shortcut to this file in your Startup folder (`Win+R` -> `shell:startup`
 
 ## Credits
 Powered by `xled` and `sacn`.
-# twinkly-openrgb-bridge
-# twinkly-openrgb-bridge
-# twinkly-openrgb-bridge
-# twinkly-openrgb-bridge
