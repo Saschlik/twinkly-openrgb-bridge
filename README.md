@@ -16,7 +16,7 @@ This bridge acts as a "Man-in-the-Middle":
 4. Applies **Matrix Mapping** per Universe to correct specific color swaps between universes.
 5. Sends raw UDP packets to the Twinkly device in Real-Time mode.
 
-## Installation
+## Installation (Bash not Fish!!)
 
 1. **Clone the repository:**
    ```bash
@@ -47,7 +47,7 @@ This bridge acts as a "Man-in-the-Middle":
     "num_leds": 210,
     "pad_bytes": 0,
     "map_u1": [0, 1, 2, 3],
-    "map_u2": [2, 1, 3, 0]
+    "map_u2": [2, 1, 3, 0] 
 }
 ```
 
@@ -56,7 +56,7 @@ This bridge acts as a "Man-in-the-Middle":
 - **num_leds:** Total number of LEDs in your string (e.g., 210 for Curtains).
 - **pad_bytes:** Global byte shift - set to `0` for RGBW Gen 2 devices.
 - **map_u1:** Channel mapping for Universe 1 (first 170 LEDs) - `[0, 1, 2, 3]` = no remapping.
-- **map_u2:** Channel mapping for Universe 2 (remaining LEDs) - `[2, 1, 3, 0]` fixes color swap.
+- **map_u2:** Channel mapping for Universe 2 (remaining LEDs) - `[2, 1, 3, 0]` fixes color swap. **IMPORTANT**
 
 ### Twinkly Curtain (210 LEDs) Matrix Layout
 The Twinkly Curtains with 210 LEDs have the following matrix dimensions:
@@ -73,7 +73,7 @@ If you don't know your shift or mapping, use the included scanner tool. It sends
 
 Watch your lights. When they turn red, note the `Order` and `Shift` displayed in the terminal and update `config.json`.
 
-## OpenRGB Setup
+## OpenRGB 0.9+ (git1702) Setup [or newer]
 
 1. Add Device → **E1.31**.
 2. **IP:** `127.0.0.1` (Localhost).
