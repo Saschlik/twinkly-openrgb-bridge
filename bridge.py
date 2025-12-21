@@ -16,9 +16,9 @@ CONFIG_FILE = "config.json"
 config = {
     "device_ip": "192.168.1.100",
     "num_leds": 210,
-    "pad_bytes": 2,
+    "pad_bytes": 0,
     "map_u1": [0, 1, 2, 3],
-    "map_u2": [1, 2, 0, 3]
+    "map_u2": [2, 1, 3, 0]
 }
 
 # Load config from file if it exists
@@ -102,8 +102,9 @@ def send_to_twinkly():
         for i in range(0, len(rgb_buffer), 3):
             if i + 2 >= len(rgb_buffer): break
             
-            # Create input pool: [R, G, B, 0]
-            pool = [rgb_buffer[i], rgb_buffer[i+1], rgb_buffer[i+2], 0]
+            # Create input pool for RGBW Gen 2: [G, W, B, R]
+            # This fixes the color channel interpretation issue
+            pool = [rgb_buffer[i+1], 0, rgb_buffer[i+2], rgb_buffer[i]]
             
             # Determine which Universe map to use
             if (i // 3) < 170:
