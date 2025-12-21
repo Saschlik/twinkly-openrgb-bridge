@@ -56,7 +56,7 @@ This bridge acts as a "Man-in-the-Middle":
 - **num_leds:** Total number of LEDs in your string (e.g., 210 for Curtains).
 - **pad_bytes:** Global byte shift - set to `0` for RGBW Gen 2 devices.
 - **map_u1:** Channel mapping for Universe 1 (first 170 LEDs) - `[0, 1, 2, 3]` = no remapping.
-- **map_u2:** Channel mapping for Universe 2 (remaining LEDs) - `[2, 1, 3, 0]` fixes color swap. **IMPORTANT**
+- **map_u2:** Channel mapping for Universe 2 (remaining LEDs) - `[2, 1, 3, 0]` fixes color swap. **IMPORTANT more Info at the ReadMe.md bottom**
 
 ### Twinkly Curtain (210 LEDs) Matrix Layout
 The Twinkly Curtains with 210 LEDs have the following matrix dimensions:
@@ -141,7 +141,7 @@ Place a shortcut to this file in your Startup folder (`Win+R` → `shell:startup
 
 ### Universe 2 colors are shifted
 - This is expected behavior - the `map_u2` setting corrects this.
-- If still wrong, try different map_u2 values: `[1, 2, 3, 0]` or `[3, 0, 1, 2]`.
+- If still wrong, try different map_u2 values: `[0, 1, 2, 3]` or `[x, 1, x, x]`(try couple variations).
 
 ## Technical Details
 
@@ -160,7 +160,7 @@ pool = [rgb_buffer[i+1], 0, rgb_buffer[i+2], rgb_buffer[i]]
 ### Why Two Universes?
 E1.31 DMX universes support a maximum of 512 channels. For RGB LEDs:
 - 1 LED = 3 channels (R, G, B)
-- 170 LEDs = 510 channels (fits in Universe 1)
+- 170 LEDs = 510 channels (fits in Universe 1) (That causes the Map_2 Shift where White is still white and RGB shifts by 2 bytes/channels)
 - LEDs 171-210 require Universe 2
 
 ## Credits
