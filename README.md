@@ -43,7 +43,7 @@ This bridge acts as a "Man-in-the-Middle":
 
 ```json
 {
-    "device_ip": "192.168.178.81",
+    "device_ip": "192.168.178.XX",
     "num_leds": 210,
     "pad_bytes": 0,
     "map_u1": [0, 1, 2, 3],
