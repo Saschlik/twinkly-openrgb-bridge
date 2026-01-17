@@ -89,23 +89,73 @@ Watch your lights. When they turn red, note the `Order` and `Shift` displayed in
 Since OpenRGB does not natively start external scripts, use one of these methods:
 
 ### 🐧 Linux (Systemd User Service) - Recommended
+
+**Basic Service (Recommended for most users):**
+
 1. Create `~/.config/systemd/user/twinkly-bridge.service`:
    ```ini
    [Unit]
    Description=Twinkly OpenRGB Bridge
-   After=network.target
+   After=network-online.target
+   Wants=network-online.target
 
    [Service]
    # UPDATE PATHS!
    ExecStart=/home/YOUR_USER/twinkly-bridge/venv/bin/python /home/YOUR_USER/twinkly-bridge/bridge.py
    WorkingDirectory=/home/YOUR_USER/twinkly-bridge
-   Restart=always
-   RestartSec=5
+   
+   # Restart policy: only restart on failure, not on clean exit
+   Restart=on-failure
+   RestartSec=30
+   
+   # Stop trying after 5 failed attempts in 5 minutes
+   StartLimitBurst=5
+   StartLimitIntervalSec=300
 
    [Install]
    WantedBy=default.target
    ```
-2. Run `systemctl --user enable --now twinkly-bridge`.
+
+2. Enable and start:
+   ```bash
+   systemctl --user daemon-reload
+   systemctl --user enable --now twinkly-bridge.service
+   ```
+
+3. Check status:
+   ```bash
+   systemctl --user status twinkly-bridge.service
+   ```
+
+**Advanced: With Failure Notifications (Optional):**
+
+If you want desktop notifications when the service fails (e.g., device is offline):
+
+1. Create notification service `~/.config/systemd/user/twinkly-bridge-notify.service`:
+   ```ini
+   [Unit]
+   Description=Twinkly Bridge Failure Notification
+
+   [Service]
+   Type=oneshot
+   ExecStart=/usr/bin/notify-send -u critical "Twinkly Bridge Failed" "Check if device is powered on and connected to network"
+   ```
+
+2. Add to your main service file:
+   ```ini
+   [Unit]
+   Description=Twinkly OpenRGB Bridge
+   After=network-online.target
+   Wants=network-online.target
+   OnFailure=twinkly-bridge-notify.service  # Add this line
+   
+   # ... rest of the service configuration
+   ```
+
+3. Reload:
+   ```bash
+   systemctl --user daemon-reload
+   ```
 
 ### 🪟 Windows (Batch Script)
 Create `start_all.bat`:
@@ -129,19 +179,58 @@ Place a shortcut to this file in your Startup folder (`Win+R` → `shell:startup
 
 ## Troubleshooting
 
+### Service keeps restarting / Getting spam notifications
+
+**Symptom:** `systemctl status` shows high restart counter, or you get repeated notifications.
+
+**Most Common Cause:** Twinkly device is powered off or disconnected from network.
+
+**Solution:**
+1. Check if device is powered on and connected:
+   ```bash
+   ping YOUR_DEVICE_IP
+   ```
+
+2. View detailed error logs:
+   ```bash
+   journalctl --user -u twinkly-bridge.service -n 50
+   ```
+
+3. Stop the service temporarily:
+   ```bash
+   systemctl --user stop twinkly-bridge.service
+   ```
+
+4. Test manually to see exact error:
+   ```bash
+   cd ~/twinkly-bridge
+   source venv/bin/activate
+   python bridge.py
+   ```
+
+**Note:** The bridge includes automatic retry logic (5 attempts with 10-second delays). If your device is slow to boot or you start the service before the device is ready, it will keep trying for up to 50 seconds before giving up.
+
 ### Colors are still wrong
 - Ensure `pad_bytes` is set to `0`.
 - Verify your device is RGBW Gen 2 (model TWW210SPP2 or similar).
 - Try the diagnostic `scanner.py` tool to find the correct configuration.
 
 ### Bridge won't connect
-- Close the Twinkly mobile app completely (it blocks the Real-Time mode).
-- Verify the IP address is correct.
-- Ensure your firewall allows UDP traffic on port 7777.
+- **Check device power:** Is the Twinkly device turned on?
+- **Check network:** Can you ping the device IP?
+- **Close mobile app:** The Twinkly mobile app blocks Real-Time mode when open.
+- **Verify IP address:** IP may have changed if assigned by DHCP. Check in Twinkly app.
+- **Firewall:** Ensure UDP port 7777 is not blocked.
 
 ### Universe 2 colors are shifted
 - This is expected behavior - the `map_u2` setting corrects this.
 - If still wrong, try different map_u2 values: `[0, 1, 2, 3]` or `[x, 1, x, x]`(try couple variations).
+
+### Device not ready at boot
+If the bridge starts before your Twinkly device is ready (common with smart plugs or slow network):
+- The built-in retry logic will attempt connection 5 times over 50 seconds
+- If this isn't enough, increase `RestartSec=30` to `RestartSec=60` in your service file
+- Consider setting a static IP for your Twinkly device in your router
 
 ## Technical Details
 
@@ -162,6 +251,13 @@ E1.31 DMX universes support a maximum of 512 channels. For RGB LEDs:
 - 1 LED = 3 channels (R, G, B)
 - 170 LEDs = 510 channels (fits in Universe 1) (That causes the Map_2 Shift where White is still white and RGB shifts by 2 bytes/channels)
 - LEDs 171-210 require Universe 2
+
+### Error Handling & Retry Logic
+The bridge includes built-in connection retry logic:
+- **5 retry attempts** with 10-second delays between each
+- **Network connectivity check** before attempting connection
+- **Clear error messages** indicating common issues
+- Compatible with systemd's restart policies for robust autostart
 
 ## Credits
 Powered by [`xled`](https://github.com/scrool/xled) and [`sacn`](https://github.com/Hundemeier/sacn).
