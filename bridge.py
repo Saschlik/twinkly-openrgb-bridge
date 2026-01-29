@@ -196,7 +196,8 @@ def send_to_twinkly():
 @receiver.listen_on('universe', universe=START_UNIVERSE)
 def callback_u1(packet):
     data = list(packet.dmxData[:510])
-    while len(data) < 510: data.append(0)
+    if len(data) < 510:
+        data.extend([0] * (510 - len(data)))
     rgb_buffer[0:510] = data
     send_to_twinkly()
 
