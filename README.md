@@ -16,7 +16,7 @@ This bridge acts as a "Man-in-the-Middle":
 4. Applies **Matrix Mapping** per Universe to correct specific color swaps between universes.
 5. Sends raw UDP packets to the Twinkly device in Real-Time mode.
 
-## Installation (Bash not Fish!!)
+## Installation
 
 1. **Clone the repository:**
    ```bash
@@ -24,16 +24,25 @@ This bridge acts as a "Man-in-the-Middle":
    cd twinkly-openrgb-bridge
    ```
 
-2. **Create a virtual environment (Recommended):**
+2. **Create and Activate a virtual environment:**
+   *Required to avoid "externally-managed-environment" errors on Arch Linux, Fedora, etc.*
    ```bash
    python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   # venv\Scripts\activate   # Windows
+   
+   # Activate the environment:
+   source venv/bin/activate      # Linux/Mac (Bash/Zsh)
+   # source venv/bin/activate.fish # Linux/Mac (Fish Shell)
+   # venv\Scripts\activate       # Windows
    ```
 
 3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
+   ```
+
+4. **Start the bridge:**
+   ```bash
+   python bridge.py
    ```
 
 ## Configuration
