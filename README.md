@@ -88,7 +88,7 @@ Watch your lights. When they turn red, note the `Order` and `Shift` displayed in
 2. **IP:** `127.0.0.1` (Localhost).
 3. **Start Universe:** `1` ⚠️ **IMPORTANT: Must be set to 1!**
 4. **Size:** Your LED count (e.g., 210).
-5. **Type:** Linear (or Matrix with 7×30 for Curtains).
+5. **Type:** Matrix with 7×30 for Curtains
 6. **Start Channel:** 1 (default).
 
 **Note:** OpenRGB will automatically use Universe 1 and Universe 2 for LED strings exceeding 170 LEDs (510 DMX channels).
